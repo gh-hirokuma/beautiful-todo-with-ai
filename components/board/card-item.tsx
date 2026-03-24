@@ -1,6 +1,8 @@
 "use client"
 
 import type { Card } from "@/types/board"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { Card as UICard } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PRIORITIES } from "@/lib/constants"
@@ -14,16 +16,45 @@ export function CardItem({
   card: Card
   onClick?: () => void
 }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: card.id,
+    data: { type: "card", card },
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
   const priority = PRIORITIES.find((p) => p.value === card.priority)
 
   return (
     <UICard
-      className="group cursor-pointer transition-all duration-150 hover:shadow-md hover:-translate-y-0.5"
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        "group cursor-pointer transition-all duration-150 hover:shadow-md hover:-translate-y-0.5",
+        isDragging && "opacity-50 shadow-lg ring-2 ring-primary/30"
+      )}
       onClick={onClick}
     >
       <div className="p-3">
         <div className="mb-1 flex items-start gap-2">
-          <GripVertical className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+          <button
+            className="mt-0.5 shrink-0 cursor-grab touch-none text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
+            {...attributes}
+            {...listeners}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <GripVertical className="h-4 w-4" />
+          </button>
           <span className="text-sm font-medium leading-snug">{card.title}</span>
         </div>
 
