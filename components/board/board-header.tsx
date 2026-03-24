@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DarkModeToggle } from "@/components/shared/dark-mode-toggle"
 import { useBoardStore } from "@/lib/board-store"
+import { AIBreakdownDialog } from "@/components/ai/ai-breakdown-dialog"
+import { AISummaryPanel } from "@/components/ai/ai-summary-panel"
 import { ArrowLeft, Check, Pencil, Sparkles } from "lucide-react"
 import Link from "next/link"
 
@@ -64,6 +66,8 @@ export function BoardHeader({ board }: { board: Board }) {
         <span className="text-sm text-muted-foreground">
           {board.columns.reduce((sum, col) => sum + col.cards.length, 0)} cards
         </span>
+        <AIBreakdownDialog board={board} />
+        <AISummaryPanel board={board} />
         <DarkModeToggle />
       </div>
     </header>

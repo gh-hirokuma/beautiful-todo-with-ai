@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import type { Card, Label, Priority } from "@/types/board"
+import type { Board, Card, Label, Priority } from "@/types/board"
 import {
   Dialog,
   DialogContent,
@@ -25,23 +25,24 @@ import { Calendar } from "@/components/ui/calendar"
 import { useBoardStore } from "@/lib/board-store"
 import { PRIORITIES } from "@/lib/constants"
 import { cn, formatDueDate, isDueDateOverdue } from "@/lib/utils"
+import { AIDescriptionButton } from "@/components/ai/ai-description-button"
 import { CalendarIcon, Trash2, X } from "lucide-react"
 import { format } from "date-fns"
 import { toast } from "sonner"
 
 export function CardDetailDialog({
   card,
-  boardId,
-  boardLabels,
+  board,
   open,
   onOpenChange,
 }: {
   card: Card
-  boardId: string
-  boardLabels: Label[]
+  board: Board
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
+  const boardId = board.id
+  const boardLabels = board.labels
   const [title, setTitle] = useState(card.title)
   const [description, setDescription] = useState(card.description)
   const [priority, setPriority] = useState<Priority>(card.priority)
@@ -102,12 +103,22 @@ export function CardDetailDialog({
             placeholder="Card title"
           />
 
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Add a description..."
-            rows={4}
-          />
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Description</label>
+              <AIDescriptionButton
+                title={title}
+                boardContext={`Board with columns: ${board.columns.map((c) => c.title).join(", ")}`}
+                onGenerated={setDescription}
+              />
+            </div>
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Add a description..."
+              rows={4}
+            />
+          </div>
 
           <Separator />
 

@@ -138,8 +138,7 @@ export function BoardView({ board }: { board: Board }) {
       {selectedCard && (
         <CardDetailDialog
           card={selectedCard}
-          boardId={board.id}
-          boardLabels={board.labels}
+          board={board}
           open={!!selectedCard}
           onOpenChange={(open) => {
             if (!open) setSelectedCard(null)
