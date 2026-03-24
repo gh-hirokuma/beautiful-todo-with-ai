@@ -8,9 +8,7 @@ export default defineConfig({
   workers: 1,
   reporter: "html",
   use: {
-    baseURL:
-      process.env.BASE_URL ||
-      "https://beautiful-todo-with-ai-git-develop-ghhirokumas-projects.vercel.app",
+    baseURL: process.env.BASE_URL || "http://localhost:3000",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
